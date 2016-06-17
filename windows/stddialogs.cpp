@@ -110,9 +110,9 @@ static void msgbox(HWND parent, const char *title, const char *description, TASK
 	wtitle = toUTF16(title);
 	wdescription = toUTF16(description);
 
-	hr = TaskDialog(parent, NULL, NULL, wtitle, wdescription, buttons, icon, NULL);
-	if (hr != S_OK)
-		logHRESULT(L"error showing task dialog", hr);
+	//hr = TaskDialog(parent, NULL, NULL, wtitle, wdescription, buttons, icon, NULL);
+	//if (hr != S_OK)
+	//	logHRESULT(L"error showing task dialog", hr);
 
 	uiFree(wdescription);
 	uiFree(wtitle);
