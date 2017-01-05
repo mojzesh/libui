@@ -5,6 +5,24 @@ This README is being written.<br>
 
 ## Announcements
 
+* **27 November 2016**
+	* Decided to split the table stuff into its own branch. It will be developed independently of everything else, along with a few other features.
+
+* **2 November 2016**
+	* Added two new functions to replace the deleted `uiWindowPosition()` and friends: `uiAreaBeginUserWindowMove()` and `uiAreaBeginUserWindowResize()`. When used in a `uiAreaHandler.Mouse()` event handler, these let you initiate a user-driven mouse move or mouse resize of the window at any point in a uiArea.
+
+* **31 October 2016**
+	* @krakjoe noticed that I accidentally used thread-unsafe code in uiQueueMain() on Unix. Fixed.
+
+* **24 October 2016**
+	* `uiWindowSetContentSize()` on Unix no longer needs to call up the GTK+ main loop. As a result, bugs related to strange behavior using that function (and the now-deleted `uiWindowSetPosition()` and `uiWindowCenter()`) should go away. I'll need to go through the bugs to verify as much, though.
+
+* **22 October 2016**
+	* Due to being unable to guarantee they will work (especially as we move toward capability-driven window systems like Wayland), or being unable to work without hacking that breaks other things, the following functions have been removed: `uiWindowPosition()`, `uiWindowSetPosition()`, `uiWindowCenter()`, and `uiWindowOnPositionChanged()`. Centering may come back at some point in the future, albeit in a possibly restricted form. A function to initiate a user move when a part of a uiArea is clicked will be provided soon.
+
+* **21 October 2016**
+	* `uiDrawTextWeightUltraBold` is now spelled correctly. Thanks to @krakjoe.
+
 * **18 June 2016**
 	* Help decide [the design of tables and trees in libui](https://github.com/andlabs/libui/issues/159); the implementation starts within the next few days, if not tomorrow!
 
@@ -23,6 +41,9 @@ This README is being written.<br>
 ## Updates
 
 *Note that today's entry (Eastern Time) may be updated later today.*
+
+* **<codedate**
+	* Added `uiTable` TODO
 
 * **17 June 2016**
 	* `uiMainSteps()` no longer takes any arguments and no longer needs to invoke a function to do the work. You still need to call it, but once you do, it will return immediately and you can then get right to your main loop.
@@ -127,18 +148,31 @@ Other people have made bindings to other languages:
 Language | Bindings
 --- | ---
 C#/.net | [LibUI.Binding](https://github.com/NattyNarwhal/LibUI.Binding), [SharpUI](https://github.com/benpye/sharpui/)
+CHICKEN Scheme | [wasamasa/libui](https://github.com/wasamasa/libui)
 Crystal | [libui.cr](https://github.com/Fusion/libui.cr)
-D | [DerelictLibui](https://github.com/Extrawurst/DerelictLibui)
+D | [DerelictLibui (flat API)](https://github.com/Extrawurst/DerelictLibui), [libuid (object-oriented)](https://github.com/mogud/libuid)
 Euphoria | [libui-euphoria](https://github.com/ghaberek/libui-euphoria)
-Haskell | [libui-haskell](https://github.com/ajnsit/libui-haskell)
+Harbour | [HBUI](https://github.com/RJopek/HBUI)
+Haskell | [libui-haskell](https://github.com/ajnsit/libui-haskell), [beijaflor-io/haskell-libui (complete FFI bindings, extensions and higher-level API)](https://github.com/beijaflor-io/haskell-libui)
 JavaScript | [libui.js (merged into libui-node?)](https://github.com/mavenave/libui.js)
 Julia | [Libui.jl](https://github.com/joa-quim/Libui.jl)
 Lua | [libuilua](https://github.com/zevv/libuilua), [libui-lua](https://github.com/mdombroski/libui-lua)
 Nim | [ui](https://github.com/nim-lang/ui)
 Node.js | [libui-node](https://github.com/parro-it/libui-node)
+PHP | [ui](https://github.com/krakjoe/ui)
 Python | [pylibui](https://github.com/joaoventura/pylibui)
 Ruby | [libui-ruby](https://github.com/jamescook/libui-ruby)
 Rust | [libui-rs](https://github.com/pcwalton/libui-rs)
+Swift | [libui-swift](https://github.com/sclukey/libui-swift)
+
+## Frequently Asked Questions
+
+### Why does my program start in the background on OS X if I run from the command line?
+OS X normally does not start program executables directly; instead, it uses [Launch Services](https://developer.apple.com/reference/coreservices/1658613-launch_services?language=objc) to coordinate the launching of the program between the various parts of the system and the loading of info from an .app bundle. One of these coordination tasks is responsible for bringing a newly launched app into the foreground. This is called "activation".
+
+When you run a binary directly from the Terminal, however, you are running it directly, not through Launch Services. Therefore, the program starts in the background, because no one told it to activate! Now, it turns out [there is an API](https://developer.apple.com/reference/appkit/nsapplication/1428468-activateignoringotherapps) that we can use to force our app to be activated. But if we use it, then we'd be trampling over Launch Services, which already knows whether it should activate or not. Therefore, libui does not step over Launch Services, at the cost of requiring an extra user step if running directly from the command line.
+
+See also [this](https://github.com/andlabs/libui/pull/20#issuecomment-211381971) and [this](http://stackoverflow.com/questions/25318524/what-exactly-should-i-pass-to-nsapp-activateignoringotherapps-to-get-my-appl).
 
 ## Screenshots
 
