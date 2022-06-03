@@ -14,6 +14,10 @@ cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 # the docs say we need to set this up prior to project()
 set(CMAKE_OSX_DEPLOYMENT_TARGET "10.8")
 
+IF(APPLE)
+  SET(CMAKE_OSX_ARCHITECTURES "x86_64;arm64" CACHE STRING "Build architectures for Mac OS X" FORCE)
+ENDIF(APPLE)
+
 # we want to disable incremental linking
 # see also:
 # - https://github.com/bulletphysics/bullet3/blob/master/CMakeLists.txt#L43
@@ -157,7 +161,7 @@ if(BUILD_SHARED_LIBS)
 		_LIBUI_LDFLAGS)
 endif()
 if(NOT BUILD_SHARED_LIBS)
-	_handle_static()
+	_handle_static(${ARCH})
 	# TODO figure out a way to tell libui that it's static
 	target_compile_definitions(${_LIBUINAME}
 		PUBLIC _UI_STATIC)
